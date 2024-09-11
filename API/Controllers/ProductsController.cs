@@ -6,20 +6,20 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController(IProductsRepository Repo) : ControllerBase
+    public class ProductsController(IGenericRepository<Product> Repo) : ControllerBase
     {
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts(string? brand, string? type,string? sort)
+        public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts()
         {
-            return Ok(await Repo.GetProductsAsync(brand,type,sort));
+            return Ok(await Repo.ListAllAsync());
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await Repo.GetProductByIdAsync(id);
+            var product = await Repo.GetByIdAsync(id);
 
             if (product == null)
             {
@@ -42,9 +42,9 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            Repo.UpdateProduct(product);
+            Repo.Update(product);
 
-            if (await Repo.SaveChangesAsync())
+            if (await Repo.SaveAllAsync())
             {
                 return NoContent();
             }
@@ -56,8 +56,8 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
-            Repo.AddProduct(product);
-            if (await Repo.SaveChangesAsync())
+            Repo.Add(product);
+            if (await Repo.SaveAllAsync())
             {
                 return CreatedAtAction("GetProduct", new { id = product.Id }, product);
             }
@@ -68,14 +68,14 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = await Repo.GetProductByIdAsync(id);
+            var product = await Repo.GetByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            Repo.DeleteProduct(product);
-            if (await Repo.SaveChangesAsync())
+            Repo.Delete(product);
+            if (await Repo.SaveAllAsync())
             {
                 return NoContent();
             }
@@ -86,18 +86,18 @@ namespace API.Controllers
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
         {
-            return Ok(await Repo.GetBrandsAsync());
+            return Ok();
         }
 
         [HttpGet("types")]
         public async Task<ActionResult<IReadOnlyList<string>>> GetTypes()
         {
-            return Ok(await Repo.GetTypesAsync());
+            return Ok();
         }
 
         private bool ProductExists(int id)
         {
-            return Repo.ProductExists(id);
+            return Repo.Exists(id);
         }
     }
 }
