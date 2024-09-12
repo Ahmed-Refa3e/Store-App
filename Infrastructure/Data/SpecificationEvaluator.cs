@@ -11,7 +11,46 @@ namespace Infrastructure.Data
             {
                 query = query.Where(spec.Criteria);
             }
+            if (spec.OrderBy != null)
+            {
+                query = query.OrderBy(spec.OrderBy);
+            }
+            if (spec.OrderByDescending != null)
+            {
+                query = query.OrderByDescending(spec.OrderByDescending);
+            }
+            if (spec.IsDistinct)
+            {
+                query = query.Distinct();
+            }
             return query;
+        }
+
+        public static IQueryable<TResult> GetQuery<TSpec, TResult>(IQueryable<T> query,
+        ISpecification<T, TResult> spec)
+        {
+            if (spec.Criteria != null)
+            {
+                query = query.Where(spec.Criteria);
+            }
+            if (spec.OrderBy != null)
+            {
+                query = query.OrderBy(spec.OrderBy);
+            }
+            if (spec.OrderByDescending != null)
+            {
+                query = query.OrderByDescending(spec.OrderByDescending);
+            }
+            var SelectQuery = query as IQueryable<TResult>;
+            if (spec.Select != null)
+            {
+                SelectQuery = query.Select(spec.Select);
+            }
+            if (spec.IsDistinct)
+            {
+                SelectQuery = SelectQuery?.Distinct();
+            }
+            return SelectQuery ?? query.Cast<TResult>();
         }
     }
 }

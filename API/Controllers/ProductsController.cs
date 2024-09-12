@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Specifications;
 
 namespace API.Controllers
 {
@@ -10,9 +11,11 @@ namespace API.Controllers
     {
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts()
+        public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts(string? brand,string? type,string? sort)
         {
-            return Ok(await Repo.ListAllAsync());
+            var spec = new ProductSpecification(brand, type, sort);
+            var products = await Repo.ListAsyncWithSpec(spec);
+            return Ok(products);
         }
 
         // GET: api/Products/5
@@ -86,13 +89,15 @@ namespace API.Controllers
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
         {
-            return Ok();
+            var spec = new BrandListSpecification();
+            return Ok(await Repo.ListAsyncWithSpec(spec));
         }
 
         [HttpGet("types")]
         public async Task<ActionResult<IReadOnlyList<string>>> GetTypes()
         {
-            return Ok();
+            var spec = new TypeListSpecification();
+            return Ok(await Repo.ListAsyncWithSpec(spec));
         }
 
         private bool ProductExists(int id)
