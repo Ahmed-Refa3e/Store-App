@@ -2,6 +2,7 @@
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
+using API.RequestHelpers;
 
 namespace API.Controllers
 {
@@ -11,11 +12,13 @@ namespace API.Controllers
     {
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts(string? brand,string? type,string? sort)
+        public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts([FromQuery]ProductsSpecParams specParams)
         {
-            var spec = new ProductSpecification(brand, type, sort);
+            var spec = new ProductSpecification(specParams);
+            var count = await Repo.CountAsync(spec);
             var products = await Repo.ListAsyncWithSpec(spec);
-            return Ok(products);
+            var pagination = new Pagination<Product>(specParams.PageIndex,specParams.PageSize,count,products);
+            return Ok(pagination);
         }
 
         // GET: api/Products/5
