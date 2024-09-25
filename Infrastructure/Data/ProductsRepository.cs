@@ -8,27 +8,27 @@ public class ProductsRepository(StoreContext context) : IProductsRepository
 {
     public void AddProduct(Product product)
     {
-        context.Products.Add(product);
+        context.DeliveryMethod.Add(product);
     }
 
     public void DeleteProduct(Product product)
     {
-        context.Products.Remove(product);
+        context.DeliveryMethod.Remove(product);
     }
 
     public async Task<IReadOnlyList<string>> GetBrandsAsync()
     {
-        return await context.Products.Select(p => p.Brand).Distinct().ToListAsync();
+        return await context.DeliveryMethod.Select(p => p.Brand).Distinct().ToListAsync();
     }
 
     public async Task<Product?> GetProductByIdAsync(int id)
     {
-        return await context.Products.FindAsync(id);
+        return await context.DeliveryMethod.FindAsync(id);
     }
 
     public async Task<IReadOnlyList<Product>> GetProductsAsync(string? brand, string? type, string? sort)
     {
-        IQueryable<Product> query = context.Products.AsQueryable();
+        IQueryable<Product> query = context.DeliveryMethod.AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(brand))
         {
@@ -55,12 +55,12 @@ public class ProductsRepository(StoreContext context) : IProductsRepository
 
     public async Task<IReadOnlyList<string>> GetTypesAsync()
     {
-        return await context.Products.Select(p => p.Type).Distinct().ToListAsync();
+        return await context.DeliveryMethod.Select(p => p.Type).Distinct().ToListAsync();
     }
 
     public bool ProductExists(int id)
     {
-        return context.Products.Any(e => e.Id == id);
+        return context.DeliveryMethod.Any(e => e.Id == id);
     }
 
     public async Task<bool> SaveChangesAsync()
