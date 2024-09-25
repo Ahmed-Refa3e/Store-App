@@ -1,5 +1,7 @@
 ﻿using Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace API.Controllers;
 
@@ -29,9 +31,13 @@ public class BuggyController : BaseApiController
         throw new Exception("This is a test exception");
     }
 
-    [HttpPost("validationerror")]
-    public IActionResult GetValidationError(Product product)
+    [Authorize]
+    [HttpGet("secret")]
+    public IActionResult GetSecret()
     {
-        return Ok();
+        var name = User.FindFirst(ClaimTypes.Name)?.Value;
+        var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        return Ok("Hello " + name + " with the id of " + id);
     }
 }
