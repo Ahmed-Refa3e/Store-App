@@ -2,6 +2,7 @@
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers;
 
@@ -17,7 +18,7 @@ public class ProductsController(IUnitOfWork unit) : BaseApiController
 
     // GET: api/Products/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<Product>> GetProduct(int id)
+    public async Task<ActionResult<Product>> GetProductById(int id)
     {
         var product = await unit.Repository<Product>().GetByIdAsync(id);
 
@@ -30,8 +31,9 @@ public class ProductsController(IUnitOfWork unit) : BaseApiController
 
     // PUT: api/Products/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutProduct(int id, Product product)
+    public async Task<IActionResult> UpdateProduct(int id, Product product)
     {
         if (id != product.Id)
         {
@@ -53,8 +55,9 @@ public class ProductsController(IUnitOfWork unit) : BaseApiController
 
     // POST: api/Products
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<ActionResult<Product>> PostProduct(Product product)
+    public async Task<ActionResult<Product>> CreateProduct(Product product)
     {
         unit.Repository<Product>().Add(product);
         if (await unit.Complete())
@@ -65,6 +68,7 @@ public class ProductsController(IUnitOfWork unit) : BaseApiController
     }
 
     // DELETE: api/Products/5
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
