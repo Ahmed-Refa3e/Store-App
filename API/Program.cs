@@ -1,4 +1,5 @@
 using API.Middleware;
+using API.SignalR;
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
@@ -50,7 +51,7 @@ builder.Services.AddDbContext<StoreContext>(options =>
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+builder.Services.AddSignalR();
 builder.Services.AddCors();
 // Redis
 builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
@@ -93,11 +94,11 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins());
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+app.UseSwagger();
+app.UseSwaggerUI();
+//}
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
@@ -105,6 +106,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapGroup("api").MapIdentityApi<AppUser>();
+app.MapHub<NotificationHub>("/hub/notifications");
 
 try
 {
