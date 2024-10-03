@@ -92,8 +92,6 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
 
-app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins());
-
 //if (app.Environment.IsDevelopment())
 //{
 app.UseSwagger();
@@ -103,6 +101,8 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseDefaultFiles();
 
 app.MapControllers();
 app.MapGroup("api").MapIdentityApi<AppUser>();
