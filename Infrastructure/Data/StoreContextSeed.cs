@@ -1,6 +1,6 @@
-﻿using System.Reflection;
+﻿using Core.Entities;
+using System.Reflection;
 using System.Text.Json;
-using Core.Entities;
 
 namespace Infrastructure.Data;
 
@@ -10,7 +10,7 @@ public class StoreContextSeed
     {
         var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-        if (!context.DeliveryMethod.Any())
+        if (!context.Products.Any())
         {
             var productsData = await File.ReadAllTextAsync(path + @"/Data/SeedData/products.json");
 
@@ -18,14 +18,14 @@ public class StoreContextSeed
 
             if (products == null) return;
 
-            context.DeliveryMethod.AddRange(products);
+            context.Products.AddRange(products);
 
             await context.SaveChangesAsync();
         }
 
         if (!context.DeliveryMethods.Any())
         {
-            var DMData = await File.ReadAllTextAsync(path + @"/Data/SeedData/products.json");
+            var DMData = await File.ReadAllTextAsync(path + @"/Data/SeedData/delivery.json");
 
             var Methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(DMData);
 
