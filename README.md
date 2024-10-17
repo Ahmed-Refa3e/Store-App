@@ -20,7 +20,7 @@ The Store App is a comprehensive web application designed to manage customer ord
 - **ASP.NET Core MVC**: Used to structure the application, ensuring a clean separation of concerns.
 - **SQL / NoSQL Databases**: For efficient and secure database management.
 - **Bootstrap**: Ensures a responsive and visually appealing design for both mobile and desktop users.
-- **N-Tier Architecture**: Separation of concerns to improve scalability, modularity, and maintainability.
+- **Clean Architecture**: Separation of concerns to improve scalability, modularity, and maintainability.
 
 ## Additional Technical Highlights
 - **Repository Pattern**: Provides a flexible and reusable way to manage data access.
@@ -55,7 +55,7 @@ The Store App is a comprehensive web application designed to manage customer ord
     ```
 
 ## Usage
-- Access the application through your web browser at `http://localhost:5000`.
+- Access the application through your web browser at `http://refaie.runasp.net/swagger/index.html`.
 - Use the interface to manage products, orders, and users, along with cart functionality.
 
 ## Contributing
